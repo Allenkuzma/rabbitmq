@@ -1,0 +1,31 @@
+logging:
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    username: langhai.cc
+    password: langhai.cc
+    template:
+      # 这里的重连指的是和MQ连接，这里的重连是阻塞式的，会影响业务性能。
+      # 如果一定要使用，合理配置等待时长和重试次数。可以考虑使用异步线程来执行发送消息的代码。
+      retry:
+        # 开启生产者连接MQ重试机制（失败的时候进行重试）
+        enabled: true
+        # 初始化间隔（失败后初始等待时间）
+        initial-interval: 1000ms
+        # 下次等待时间 = 初始等待时间 * multiplier
+        multiplier: 1
+        # 最大重试次数
+        max-attempts: 3
+    # MQ的连接超时时间
+    connection-timeout: 1s
+    # correlated MQ异步回调发送结果
+    publisher-confirm-type: correlated
+    # 消息投递到MQ了，但是路由失败。
+    publisher-returns: true
+
+  profiles:
+    active: test

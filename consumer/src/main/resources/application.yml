@@ -1,0 +1,28 @@
+logging:
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    username: langhai.cc
+    password: langhai.cc
+    listener:
+      simple:
+        # 消费者消息推送限制，设置此参数，防止出现消息堆积，每次只能获取到一条消息，处理完成之后才能获取下一个消息。
+        prefetch: 1
+        # 消费者确认模式
+        # 消费者响应ACK 成功处理消息，MQ会将消息从队列中删除。
+        # 消费者响应NACK 消息处理失败，MQ会将消息重新投递给消费者。
+        # 消费者响应reject 消息处理失败且拒绝该消息，MQ会将消息从队列中删除该消息。
+        # none 不处理，消息投递之后会立即响应ACK，然后从MQ删除。
+        # auto 自动模式，业务正常执行的时候，消费者会响应ACK。如果出现业务异常，会自动返回NACK，MQ会一直重试，直至消费者返回ACK。如果出现消息处理或者校验异常，会自动返回reject。
+        # manual 收到模式，需要自己在业务代码中调用API，存在业务入侵，使用更加灵活。
+        acknowledge-mode: auto
+        # 开启消费者失败重试
+        retry:
+          enabled: true
+
+  profiles:
+    active: test
